@@ -9,6 +9,7 @@ setup(
     author_email="yuvipanda@gmail.com",
     install_requires=[
         'tornado',
+        'aiohttp'
     ],
     include_package_data=True
 )
