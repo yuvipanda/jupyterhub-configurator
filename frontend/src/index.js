@@ -21,10 +21,10 @@ function App() {
     return <Form
         schema={schema}
         uiSchema={uiSchema}
-    onChange={console.log}
+        onChange={console.log}
         onSubmit={updateConfig}
-    onError={console.log} />
+        onError={console.log} />
 
 }
 
-render(<App />, document.getElementById("root"));
+render(<App />, document.getElementById("configurator"));

@@ -21,11 +21,14 @@ from jupyterhub.services.auth import HubOAuthCallbackHandler
 from jupyterhub.services.auth import HubOAuthenticated
 from jupyterhub.utils import url_path_join
 
+from jinja2 import Environment, FileSystemLoader
 
+HERE = os.path.dirname(__file__)
+jinja_env = Environment(loader=FileSystemLoader(os.path.join(HERE, 'templates')))
 
 class StorageBackend:
     def __init__(self):
-        self.config_path = os.path.join(os.path.dirname(__file__), 'config_data.json')
+        self.config_path = os.path.join(HERE, 'config_data.json')
 
 
     def write(self, config):
@@ -55,25 +58,30 @@ class ConfiguratorHandler(HubOAuthenticated, RequestHandler):
         config = json.loads(self.request.body)
         storage_backend.write(config)
 
-class AuthedStaticHandler(HubOAuthenticated, StaticFileHandler):
+class UIHandler(HubOAuthenticated, RequestHandler):
     @authenticated
-    def prepare(self, *args, **kwargs):
-        pass
+    def get(self):
+        ui_template = jinja_env.get_template('index.html')
+        self.write(ui_template.render(
+            base_url=self.settings['base_url']
+        ))
 
 def main():
+    prefix = os.environ['JUPYTERHUB_SERVICE_PREFIX']
+    mp = partial(url_path_join, prefix)
+
     tornado_settings = {
         'cookie_secret': secrets.token_bytes(32),
         'storage_backend': StorageBackend(),
+        'static_path': os.path.join(HERE, "static"),
+        'static_url_prefix': mp('static/'),
+        'base_url': prefix
     }
-    prefix = os.environ['JUPYTERHUB_SERVICE_PREFIX']
 
-    mp = partial(url_path_join, prefix)
     handlers = [
         (mp(r'oauth_callback'), HubOAuthCallbackHandler),
         (mp(r'config'), ConfiguratorHandler),
-        (mp(r'(.*)'), AuthedStaticHandler, {
-            'path': os.path.join(os.path.dirname(__file__), "static"),
-        }),
+        (mp(r'/'), UIHandler)
     ]
     app = Application(
         handlers,
