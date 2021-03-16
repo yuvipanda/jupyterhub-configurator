@@ -30,7 +30,11 @@ class ConfiguratorSpawnerMixin(Configurable):
         base_classes = [c.__name__ for c in self.__class__.__mro__]
         for k, v in config.items():
             cls, prop = k.split('.')
-            if cls in base_classes:
+            # Only overwrite values if they are truthy.
+            # Admins can 'reset to default' by just emptying something
+            # out.
+            # FIXME: Support explicitly making something unset
+            if cls in base_classes and v:
                 self.log.info(f'Setting {k} to {v}')
                 setattr(self, prop, v)
         return await super().start(*args, **kwargs)
