@@ -1,0 +1,20 @@
+{
+    "type": "object",
+    "name": "config",
+  "properties": {
+    "Spawner.default_url": {
+        "type": "string",
+        "title": "Default User Interface",
+        "enum": [
+            "/lab",
+            "/tree",
+            "/rstudio"
+        ],
+        "enumNames": [
+            "JupyterLab",
+            "Classic Notebook",
+            "RStudio"
+        ]
+    }
+  }
+}
