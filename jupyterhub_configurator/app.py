@@ -26,7 +26,7 @@ jinja_env = Environment(loader=FileSystemLoader(os.path.join(HERE, 'templates'))
 
 class StorageBackend:
     def __init__(self):
-        self.config_path = os.path.join(HERE, 'config_data.json')
+        self.config_path = os.path.join(os.getcwd(), 'configurator_data.json')
 
 
     def write(self, config):
