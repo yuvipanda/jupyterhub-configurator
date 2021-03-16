@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
 // import Form from "@rjsf/core";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,13 +16,21 @@ function updateConfig(formData) {
         body: JSON.stringify(config)
     })
 }
+
 function App() {
 
+    const [formData, setFormData] = useState(null);
+
+    useEffect(() => {
+        fetch('/services/configurator/config').then(
+            resp => resp.json().then(data => setFormData(data)))
+    }, []);
     return <Form
         schema={schema}
         uiSchema={uiSchema}
         onChange={console.log}
         onSubmit={updateConfig}
+        formData={formData}
         onError={console.log} />
 
 }
