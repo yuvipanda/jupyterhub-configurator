@@ -57,8 +57,9 @@ def admin_only(self):
         raise web.HTTPError(403)
 
 class ConfiguratorHandler(HubOAuthenticated, web.RequestHandler):
-    @authenticated
-    @admin_only
+    # FIXME: PUT THIS BEHIND AUTH AGAIN,
+    # BUT ONLY WHEN THE HUB PROCESS CAN TALK TO IT AFTER
+    # BEING AUTHENTICATED
     async def get(self):
         storage_backend = self.settings['storage_backend']
         self.set_header('content-type', 'application/json')
