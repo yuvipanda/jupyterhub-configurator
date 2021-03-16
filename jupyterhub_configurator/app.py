@@ -10,16 +10,14 @@ import os
 from urllib.parse import urlparse
 
 from functools import partial
-from tornado.web import StaticFileHandler
+from tornado import web
+from tornado.web import authenticated
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from tornado.web import Application
-from tornado.web import authenticated
-from tornado.web import RequestHandler
 
 from jupyterhub.services.auth import HubOAuthCallbackHandler
 from jupyterhub.services.auth import HubOAuthenticated
-from jupyterhub.utils import url_path_join
+from jupyterhub.utils import url_path_join, auth_decorator
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -45,22 +43,39 @@ class StorageBackend:
             return {}
 
 
-class ConfiguratorHandler(HubOAuthenticated, RequestHandler):
+@auth_decorator
+def admin_only(self):
+    """
+    Only allow admin JupyterHub users access.
+
+    The version in jupyterhub.util requires that the user object
+    have attribute access to 'admin', while our user objects are
+    just JSON.
+    """
+    user = self.current_user
+    if user is None or user['admin'] != True:
+        raise web.HTTPError(403)
+
+class ConfiguratorHandler(HubOAuthenticated, web.RequestHandler):
     @authenticated
+    @admin_only
     async def get(self):
         storage_backend = self.settings['storage_backend']
         self.set_header('content-type', 'application/json')
         self.write(storage_backend.read())
 
     @authenticated
+    @admin_only
     async def post(self):
         storage_backend = self.settings['storage_backend']
         config = json.loads(self.request.body)
         storage_backend.write(config)
 
-class UIHandler(HubOAuthenticated, RequestHandler):
+class UIHandler(HubOAuthenticated, web.RequestHandler):
     @authenticated
+    @admin_only
     def get(self):
+        print(self.current_user)
         ui_template = jinja_env.get_template('index.html')
         self.write(ui_template.render(
             base_url=self.settings['base_url']
@@ -83,7 +98,7 @@ def main():
         (mp(r'config'), ConfiguratorHandler),
         (mp(r'/'), UIHandler)
     ]
-    app = Application(
+    app = web.Application(
         handlers,
         debug=True,
         **tornado_settings
