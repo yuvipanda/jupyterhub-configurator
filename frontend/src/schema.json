@@ -4,7 +4,46 @@
   "properties": {
     "KubeSpawner.image": {
         "type": "string",
-        "title": "Docker image for user environment"
+        "title": "Docker image for user environment",
+        "enumMetadata": {
+            "suggestions": [
+                {
+                    "name": "Pangeo Stack Images",
+                    "images": [
+                        {
+                            "name": "Pangeo Notebook",
+                            "image": "pangeo/pangeo-notebook",
+                            "link": "https://hub.docker.com/r/pangeo/pangeo-notebook"
+                        },
+                        {
+                            "name": "Pangeo ML Notebook",
+                            "image": "pangeo/ml-notebook",
+                            "link": "https://hub.docker.com/r/pangeo/ml-notebook"
+                        }
+                    ]
+                },
+                {
+                    "name": "Jupyter Stack Images",
+                    "images": [
+                        {
+                            "name": "Jupyter SciPy Notebook",
+                            "image": "jupyter/scipy-notebook",
+                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook"
+                        },
+                        {
+                            "name": "Jupyter DataScience Notebook",
+                            "image": "jupyter/datascience-notebook",
+                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook"
+                        },
+                        {
+                            "name": "Jupyter Spark Notebook (All)",
+                            "image": "jupyter/all-spark-notebook",
+                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-all-spark-notebook"
+                        }
+                    ]
+                }
+            ]
+            }
     },
     "Spawner.default_url": {
         "type": "string",

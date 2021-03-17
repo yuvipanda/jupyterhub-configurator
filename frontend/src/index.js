@@ -6,6 +6,7 @@ import Form from '@rjsf/bootstrap-4';
 import schema from './schema.json';
 import uiSchema from './uiSchema.json';
 import InterfacePicker from './InterfacePicker';
+import ImagePicker from './ImagePicker';
 
 import "./material-colors.css";
 import "./lab-css-variables.css";
@@ -22,8 +23,10 @@ function updateConfig(formData) {
     })
 }
 
+
 const customWidgets = {
-    interfacePicker: InterfacePicker
+    interfacePicker: InterfacePicker,
+    imagePicker: ImagePicker
 }
 
 function App() {
@@ -34,14 +37,19 @@ function App() {
         fetch('/services/configurator/config').then(
             resp => resp.json().then(data => setFormData(data)))
     }, []);
-    return <Form
-        schema={schema}
-        uiSchema={uiSchema}
-        onChange={console.log}
-        onSubmit={updateConfig}
-        formData={formData}
-        widgets={customWidgets}
-        onError={console.log} />
+
+    if(formData !== null){
+        return <Form
+            schema={schema}
+            uiSchema={uiSchema}
+            onChange={console.log}
+            onSubmit={updateConfig}
+            formData={formData}
+            widgets={customWidgets}
+            onError={console.log} />
+    } else {
+        return <p>loading..</p>
+    }
 
 }
 
