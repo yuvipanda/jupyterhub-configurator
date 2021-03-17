@@ -1,6 +1,5 @@
 {
     "Spawner.default_url": {
-        "ui:classNames":"form-check-inline",
-        "ui:widget": "radio"
+        "ui:widget": "interfacePicker"
     }
 }

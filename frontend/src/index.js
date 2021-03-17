@@ -5,6 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from '@rjsf/bootstrap-4';
 import schema from './schema.json';
 import uiSchema from './uiSchema.json';
+import InterfacePicker from './InterfacePicker';
+
+import "./material-colors.css";
+import "./lab-css-variables.css";
+import './index.css';
 
 function updateConfig(formData) {
     const config = formData.formData;
@@ -15,6 +20,10 @@ function updateConfig(formData) {
         },
         body: JSON.stringify(config)
     })
+}
+
+const customWidgets = {
+    interfacePicker: InterfacePicker
 }
 
 function App() {
@@ -31,6 +40,7 @@ function App() {
         onChange={console.log}
         onSubmit={updateConfig}
         formData={formData}
+        widgets={customWidgets}
         onError={console.log} />
 
 }

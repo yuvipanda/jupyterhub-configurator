@@ -10,15 +10,25 @@
         "type": "string",
         "title": "Default User Interface",
         "enum": [
-            "/lab",
             "/tree",
+            "/lab",
             "/rstudio"
         ],
-        "enumNames": [
-            "JupyterLab",
-            "Classic Notebook",
-            "RStudio"
-        ]
+        "enumMetadata": {
+            "/tree": {
+                "title": "Classic Notebook",
+                "description": "What most people think of as Jupyter"
+            },
+            "/lab": {
+                "title": "JupyterLab",
+                "description": "Powerful next generation Jupyter Notebook interface"
+
+            },
+            "/rstudio": {
+                "title": "RStudio",
+                "description": "Very popular R IDE"
+            }
+        }
     }
   }
 }
