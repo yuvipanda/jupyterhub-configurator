@@ -1,27 +1,20 @@
-.options {
-  display: flex;
-  justify-content: space-between;
-}
-
-.options a {
-  display: block;
-  flex-grow: 1;
-  /* Make them all equal size */
-  flex-basis: 100%;
-  margin-right: 4px;
-  border: 1px solid var(--jp-border-color3);
+.option {
   color: inherit;
+  padding: 16px;
 }
 
-.options a:last-child {
-  margin-right: 0px;
+.option input {
+  /* Unsets the position: absolute on custom-control-inpu
+   * This prevents the radio button itself from going into
+   * the gutter, which looks ugly
+   */
+  position: static;
 }
 
-.options a:hover {
-  text-decoration: none;
+.active {
   background-color: var(--jp-brand-color4);
 }
 
-.options a.active {
-  background-color: var(--jp-brand-color2);
+.selected {
+  background-color: var(--jp-brand-color3);
 }

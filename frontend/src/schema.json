@@ -1,79 +1,78 @@
 {
-    "type": "object",
-    "name": "config",
+  "type": "object",
+  "name": "config",
   "properties": {
     "KubeSpawner.image": {
-        "type": "string",
-        "title": "Docker image for user environment",
-        "enumMetadata": {
-            "suggestions": [
-                {
-                    "name": "Pangeo Stack Images",
-                    "images": [
-                        {
-                            "name": "Pangeo Notebook",
-                            "image": "pangeo/pangeo-notebook",
-                            "link": "https://hub.docker.com/r/pangeo/pangeo-notebook",
-                            "description": "Geospatial analysis tools"
-                        },
-                        {
-                            "name": "Pangeo ML Notebook",
-                            "image": "pangeo/ml-notebook",
-                            "link": "https://hub.docker.com/r/pangeo/ml-notebook",
-                            "description": "ML analysis tools"
-                        }
-                    ]
-                },
-                {
-                    "name": "Jupyter Stack Images",
-                    "images": [
-                        {
-                            "name": "Jupyter SciPy Notebook",
-                            "image": "jupyter/scipy-notebook",
-                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook",
-                            "description": "Popular scientific python packages"
-
-                        },
-                        {
-                            "name": "Jupyter DataScience Notebook",
-                            "image": "jupyter/datascience-notebook",
-                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook",
-                            "description": "Popular scientific packages in Python, R and Julia"
-                        },
-                        {
-                            "name": "Jupyter Spark Notebook (All)",
-                            "image": "jupyter/all-spark-notebook",
-                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-all-spark-notebook",
-                            "description": "Spark in Python"
-                        }
-                    ]
-                }
+      "type": "string",
+      "title": "Docker image for user environment",
+      "enumMetadata": {
+        "suggestions": [
+          {
+            "name": "Pangeo Stack Images",
+            "images": [
+              {
+                "name": "Pangeo Notebook",
+                "image": "pangeo/pangeo-notebook",
+                "link": "https://hub.docker.com/r/pangeo/pangeo-notebook",
+                "description": "Geospatial analysis tools"
+              },
+              {
+                "name": "Pangeo ML Notebook",
+                "image": "pangeo/ml-notebook",
+                "link": "https://hub.docker.com/r/pangeo/ml-notebook",
+                "description": "ML analysis tools"
+              }
             ]
-            }
+          },
+          {
+            "name": "Jupyter Stack Images",
+            "images": [
+              {
+                "name": "Jupyter SciPy Notebook",
+                "image": "jupyter/scipy-notebook",
+                "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook",
+                "description": "Popular scientific python packages"
+              },
+              {
+                "name": "Jupyter DataScience Notebook",
+                "image": "jupyter/datascience-notebook",
+                "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook",
+                "description": "Popular scientific packages in Python, R and Julia"
+              },
+              {
+                "name": "Jupyter Spark Notebook (All)",
+                "image": "jupyter/all-spark-notebook",
+                "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-all-spark-notebook",
+                "description": "Spark in Python"
+              }
+            ]
+          }
+        ]
+      }
     },
     "Spawner.default_url": {
-        "type": "string",
-        "title": "Default User Interface",
-        "enum": [
-            "/tree",
-            "/lab",
-            "/rstudio"
-        ],
-        "enumMetadata": {
-            "/tree": {
-                "title": "Classic Notebook",
-                "description": "What most people think of as Jupyter"
-            },
-            "/lab": {
-                "title": "JupyterLab",
-                "description": "Powerful next generation Jupyter Notebook interface"
-
-            },
-            "/rstudio": {
-                "title": "RStudio",
-                "description": "Very popular R IDE"
-            }
-        }
+      "type": "string",
+      "title": "Default User Interface",
+      "enum": ["/tree", "/lab", "/rstudio"],
+      "enumMetadata": {
+        "interfaces": [
+          {
+            "value": "/tree",
+            "title": "Classic Notebook",
+            "description": "What most people think of as Jupyter"
+          },
+          {
+            "value": "/lab",
+            "title": "JupyterLab",
+            "description": "Powerful next generation notebook interface"
+          },
+          {
+            "value": "/rstudio",
+            "title": "RStudio",
+            "description": "Very popular R IDE"
+          }
+        ]
+      }
     }
   }
 }
