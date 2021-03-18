@@ -13,12 +13,14 @@
                         {
                             "name": "Pangeo Notebook",
                             "image": "pangeo/pangeo-notebook",
-                            "link": "https://hub.docker.com/r/pangeo/pangeo-notebook"
+                            "link": "https://hub.docker.com/r/pangeo/pangeo-notebook",
+                            "description": "Geospatial analysis tools"
                         },
                         {
                             "name": "Pangeo ML Notebook",
                             "image": "pangeo/ml-notebook",
-                            "link": "https://hub.docker.com/r/pangeo/ml-notebook"
+                            "link": "https://hub.docker.com/r/pangeo/ml-notebook",
+                            "description": "ML analysis tools"
                         }
                     ]
                 },
@@ -28,17 +30,21 @@
                         {
                             "name": "Jupyter SciPy Notebook",
                             "image": "jupyter/scipy-notebook",
-                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook"
+                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook",
+                            "description": "Popular scientific python packages"
+
                         },
                         {
                             "name": "Jupyter DataScience Notebook",
                             "image": "jupyter/datascience-notebook",
-                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook"
+                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook",
+                            "description": "Popular scientific packages in Python, R and Julia"
                         },
                         {
                             "name": "Jupyter Spark Notebook (All)",
                             "image": "jupyter/all-spark-notebook",
-                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-all-spark-notebook"
+                            "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-all-spark-notebook",
+                            "description": "Spark in Python"
                         }
                     ]
                 }
