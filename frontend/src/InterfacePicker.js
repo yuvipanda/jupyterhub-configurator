@@ -7,7 +7,7 @@ const InterfacePicker = (props) => {
   const [selectedValue, setSelectedValue] = useState(props.value);
 
   return (
-    <div className="interface-picker-container">
+    <div>
       <h4>Default user interface </h4>
       <h6 className="text-muted">Users will see this when they log in</h6>
       <div className="row">

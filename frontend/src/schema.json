@@ -8,40 +8,40 @@
       "enumMetadata": {
         "suggestions": [
           {
-            "name": "Pangeo Stack Images",
+            "title": "Pangeo Stack Images",
             "images": [
               {
-                "name": "Pangeo Notebook",
-                "image": "pangeo/pangeo-notebook",
+                "title": "Pangeo Notebook",
+                "value": "pangeo/pangeo-notebook",
                 "link": "https://hub.docker.com/r/pangeo/pangeo-notebook",
                 "description": "Geospatial analysis tools"
               },
               {
-                "name": "Pangeo ML Notebook",
-                "image": "pangeo/ml-notebook",
+                "title": "Pangeo ML Notebook",
+                "value": "pangeo/ml-notebook",
                 "link": "https://hub.docker.com/r/pangeo/ml-notebook",
                 "description": "ML analysis tools"
               }
             ]
           },
           {
-            "name": "Jupyter Stack Images",
+            "title": "Jupyter Stack Images",
             "images": [
               {
-                "name": "Jupyter SciPy Notebook",
-                "image": "jupyter/scipy-notebook",
+                "title": "Jupyter SciPy Notebook",
+                "value": "jupyter/scipy-notebook",
                 "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook",
                 "description": "Popular scientific python packages"
               },
               {
-                "name": "Jupyter DataScience Notebook",
-                "image": "jupyter/datascience-notebook",
+                "title": "Jupyter DataScience Notebook",
+                "value": "jupyter/datascience-notebook",
                 "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook",
                 "description": "Popular scientific packages in Python, R and Julia"
               },
               {
-                "name": "Jupyter Spark Notebook (All)",
-                "image": "jupyter/all-spark-notebook",
+                "title": "Jupyter Spark Notebook (All)",
+                "value": "jupyter/all-spark-notebook",
                 "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-all-spark-notebook",
                 "description": "Spark in Python"
               }

@@ -3,14 +3,6 @@
   padding: 16px;
 }
 
-.option input {
-  /* Unsets the position: absolute on custom-control-inpu
-   * This prevents the radio button itself from going into
-   * the gutter, which looks ugly
-   */
-  position: static;
-}
-
 .active {
   background-color: var(--jp-brand-color4);
 }
