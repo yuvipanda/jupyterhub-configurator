@@ -1,0 +1,27 @@
+.options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.options a {
+  display: block;
+  flex-grow: 1;
+  /* Make them all equal size */
+  flex-basis: 100%;
+  margin-right: 4px;
+  border: 1px solid var(--jp-border-color3);
+  color: inherit;
+}
+
+.options a:last-child {
+  margin-right: 0px;
+}
+
+.options a:hover {
+  text-decoration: none;
+  background-color: var(--jp-brand-color4);
+}
+
+.options a.active {
+  background-color: var(--jp-brand-color2);
+}

@@ -3,33 +3,6 @@ body {
 }
 .interface-picker-options {
 }
-.interface-picker-options {
-  display: flex;
-  justify-content: space-between;
-}
-
-.interface-picker-options a {
-  display: block;
-  flex-grow: 1;
-  /* Make them all equal size */
-  flex-basis: 100%;
-  margin-right: 4px;
-  border: 1px solid var(--jp-border-color3);
-  color: inherit;
-}
-
-.interface-picker-options a:last-child {
-  margin-right: 0px;
-}
-
-.interface-picker-options a:hover {
-  text-decoration: none;
-  background-color: var(--jp-brand-color4);
-}
-
-.interface-picker-options a.active {
-  background-color: var(--jp-brand-color2);
-}
 
 .image-suggestion-header {
   border-bottom: 1px;
