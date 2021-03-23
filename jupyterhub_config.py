@@ -6,7 +6,7 @@ from jupyterhub_configurator.mixins import ConfiguratorSpawnerMixin
 
 c.JupyterHub.authenticator_class = "dummy"
 
-c.Authenticator.admin_users = ["yuvipanda"]
+c.Authenticator.admin_users = ["admin"]
 
 c.JupyterHub.services = [
     {
