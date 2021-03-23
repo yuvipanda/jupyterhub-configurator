@@ -1,0 +1,5 @@
+# JupyterHub Configurator
+
+```{toctree}
+contributing/
+```
