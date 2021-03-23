@@ -1,2 +1,5 @@
 # jupyterhub-configurator
-Self-service configuration for JupyterHub
+
+Let admins configure their JupyterHub via a GUI
+
+![](docs/_static/screenshot.png)
