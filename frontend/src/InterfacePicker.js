@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Card from "./Card";
+import sectionStyles from "./Base.css";
 
 const InterfacePicker = (props) => {
   const interfaces = props.schema.enumMetadata.interfaces;
@@ -7,9 +8,11 @@ const InterfacePicker = (props) => {
   const [selectedValue, setSelectedValue] = useState(props.value);
 
   return (
-    <div>
-      <h4>Default user interface </h4>
-      <h6 className="text-muted">Users will see this when they log in</h6>
+    <section className="border">
+      <div className={sectionStyles.header}>
+        <h4>Default user interface </h4>
+        <h6 className="text-muted">Users will see this when they log in</h6>
+      </div>
       <div className="row">
         {interfaces.map((i) => {
           return (
@@ -25,7 +28,7 @@ const InterfacePicker = (props) => {
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };
 

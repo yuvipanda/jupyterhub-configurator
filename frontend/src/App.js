@@ -5,6 +5,7 @@ import uiSchema from "./uiSchema.json";
 import InterfacePicker from "./InterfacePicker";
 import ImagePicker from "./ImagePicker";
 import styles from "./App.css";
+import "./Base.css";
 
 function updateConfig(formData) {
   const config = formData.formData;

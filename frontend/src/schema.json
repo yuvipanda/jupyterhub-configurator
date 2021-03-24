@@ -6,6 +6,10 @@
       "type": "string",
       "title": "Docker image for user environment",
       "enumMetadata": {
+        "customInput": {
+          "title": "Use your own docker image",
+          "placeholder": ""
+        },
         "suggestions": [
           {
             "title": "Pangeo Stack Images",

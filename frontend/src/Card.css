@@ -1,8 +1,12 @@
 .option {
   color: inherit;
+  cursor: pointer;
   padding: 16px;
 }
 
+.option label {
+  cursor: pointer;
+}
 .active {
   background-color: var(--jp-brand-color4);
 }
