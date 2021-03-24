@@ -60,6 +60,7 @@
       "type": "string",
       "title": "Default User Interface",
       "enum": ["/tree", "/lab", "/rstudio"],
+      "default": "/tree",
       "enumMetadata": {
         "interfaces": [
           {
