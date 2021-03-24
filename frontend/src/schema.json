@@ -4,7 +4,9 @@
   "properties": {
     "KubeSpawner.image": {
       "type": "string",
-      "title": "Docker image for user environment",
+      "title": "User docker image",
+      "description": "Determines languages, libraries and interfaces available",
+      "help": "Leave this blank to use the default",
       "enumMetadata": {
         "customInput": {
           "title": "Use your own docker image",

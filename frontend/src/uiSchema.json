@@ -1,8 +1,13 @@
 {
-    "Spawner.default_url": {
-        "ui:widget": "interfacePicker"
-    },
-    "KubeSpawner.image": {
-        "ui:widget": "imagePicker"
+  "Spawner.default_url": {
+    "ui:widget": "interfacePicker",
+    "ui:options": {
+      "label": false
     }
+  },
+  "KubeSpawner.image": {
+    "ui:options": {
+      "label": false
+    }
+  }
 }

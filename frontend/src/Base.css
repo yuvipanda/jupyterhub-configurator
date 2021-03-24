@@ -6,8 +6,6 @@ section {
 .header {
   display: flex;
   align-items: baseline;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
 }
 
 .header h4 {
