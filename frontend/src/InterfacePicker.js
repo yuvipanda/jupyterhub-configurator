@@ -23,7 +23,10 @@ const InterfacePicker = (props) => {
               title={i.title}
               description={i.description}
               selected={i.value === selectedValue}
-              onChange={() => setSelectedValue(i.value)}
+              onChange={() => {
+                setSelectedValue(i.value);
+                props.onChange(i.value);
+              }}
             />
           );
         })}
