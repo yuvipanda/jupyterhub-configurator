@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Form from "@rjsf/bootstrap-4";
-import schema from "./schema.json";
 import uiSchema from "./uiSchema.json";
 import InterfacePicker from "./InterfacePicker";
 import ImagePicker from "./ImagePicker";
@@ -25,14 +24,14 @@ const customWidgets = {
   TextWidget: TextWidget,
 };
 
-const ConfiguratorForm = (props) => {
+const ConfiguratorForm = ({schema, formData}) => {
   return (
     <Form
       schema={schema}
       uiSchema={uiSchema}
       onChange={console.log}
       onSubmit={updateConfig}
-      formData={props.formData}
+      formData={formData}
       widgets={customWidgets}
       onError={console.log}
     />
@@ -41,10 +40,14 @@ const ConfiguratorForm = (props) => {
 
 const App = (props) => {
   const [formData, setFormData] = useState(null);
+  const [schema, setSchema] = useState(null);
 
   useEffect(() => {
     fetch("/services/configurator/config").then((resp) =>
       resp.json().then((data) => setFormData(data))
+    );
+    fetch("/services/configurator/schema").then((resp) =>
+      resp.json().then((data) => setSchema(data))
     );
   }, []);
 
@@ -58,8 +61,8 @@ const App = (props) => {
         </div>
       </nav>
       <div className={styles.mainBody + " container"}>
-        {formData !== null ? (
-          <ConfiguratorForm formData={formData} />
+        {(formData !== null && schema !== null) ? (
+          <ConfiguratorForm formData={formData} schema={schema} />
         ) : (
           <p>Loading</p>
         )}

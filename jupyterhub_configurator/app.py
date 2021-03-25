@@ -19,6 +19,11 @@ from jupyterhub.services.auth import HubOAuthCallbackHandler
 from jupyterhub.services.auth import HubOAuthenticated
 from jupyterhub.utils import url_path_join, auth_decorator
 
+from traitlets.config import Application
+from traitlets import Dict, Unicode, default
+
+from deepmerge import always_merger
+
 from jinja2 import Environment, FileSystemLoader
 
 HERE = os.path.dirname(__file__)
@@ -82,32 +87,81 @@ class UIHandler(HubOAuthenticated, web.RequestHandler):
         ui_template = jinja_env.get_template("index.html")
         self.write(ui_template.render(base_url=self.settings["base_url"]))
 
+class SchemaHandler(HubOAuthenticated, web.RequestHandler):
+    @authenticated
+    @admin_only
+    def get(self):
+        self.set_header("content-type", "application/json; charset=utf-8")
+        self.write(json.dumps(self.settings['configurator'].full_schema))
 
-def main():
-    prefix = os.environ["JUPYTERHUB_SERVICE_PREFIX"]
-    mp = partial(url_path_join, prefix)
+class Configurator(Application):
+    schemas = Dict(
+        {},
+        help="""
+        Dictionary of dicts of JSON Schema used by the configurator.
 
-    tornado_settings = {
-        "cookie_secret": secrets.token_bytes(32),
-        "storage_backend": StorageBackend(),
-        "static_path": os.path.join(HERE, "static"),
-        "static_url_prefix": mp("static/"),
-        "base_url": prefix,
-    }
+        Each value should be a JSON Schema describing an object. Object
+        properties should be named with the traitlet key they are going to set -
+        for example, `KubeSpawner.image` or `Spawner.default_url`. The value
+        specified by the user will be used to set these traitlets *just before
+        spawning*. "title", "description" and "default" values of the properties
+        are displayed as you would expect
 
-    handlers = [
-        (mp(r"oauth_callback"), HubOAuthCallbackHandler),
-        (mp(r"config"), ConfiguratorHandler),
-        (mp(r"/"), UIHandler),
-    ]
-    app = web.Application(handlers, debug=True, **tornado_settings)
+        All the dictionary entries will be merged to produce the JSONSchema
+        given to the frontend. This allows easy overrides and additions to
+        the schema.
+        """,
+        config=True
+    )
 
-    http_server = HTTPServer(app)
 
-    http_server.listen(10101, "0.0.0.0")
+    @property
+    def full_schema(self):
+        schema = {}
+        for s in self.schemas.values():
+            always_merger.merge(schema, s)
+        return schema
 
-    IOLoop.current().start()
+    config_file = Unicode(
+        "jupyterhub_configurator_config.py",
+        help="""
+        File to read configurator config from
+        """,
+        config=True
+    )
+
+
+    def start(self):
+        self.load_config_file(self.config_file)
+        print(self.schemas)
+
+        prefix = os.environ["JUPYTERHUB_SERVICE_PREFIX"]
+        mp = partial(url_path_join, prefix)
+
+        tornado_settings = {
+            "cookie_secret": secrets.token_bytes(32),
+            "storage_backend": StorageBackend(),
+            "static_path": os.path.join(HERE, "static"),
+            "static_url_prefix": mp("static/"),
+            "base_url": prefix,
+            "configurator": self
+        }
+
+        handlers = [
+            (mp("oauth_callback"), HubOAuthCallbackHandler),
+            (mp("config"), ConfiguratorHandler),
+            (mp("schema"), SchemaHandler),
+            (mp(r"/"), UIHandler),
+        ]
+        app = web.Application(handlers, debug=True, **tornado_settings)
+
+        http_server = HTTPServer(app)
+
+        http_server.listen(10101, "0.0.0.0")
+
+        IOLoop.current().start()
 
 
 if __name__ == "__main__":
-    main()
+    configurator = Configurator()
+    configurator.start()

@@ -7,6 +7,6 @@ setup(
     license="3-BSD",
     author="yuvipanda",
     author_email="yuvipanda@gmail.com",
-    install_requires=["tornado", "aiohttp", "jupyterhub"],
+    install_requires=["tornado", "aiohttp", "jupyterhub", "deepmerge"],
     include_package_data=True,
 )
