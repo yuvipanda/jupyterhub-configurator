@@ -164,4 +164,5 @@ class Configurator(Application):
 
 if __name__ == "__main__":
     configurator = Configurator()
+    configurator.initialize()
     configurator.start()
