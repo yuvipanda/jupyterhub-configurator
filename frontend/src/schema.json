@@ -6,55 +6,7 @@
       "type": "string",
       "title": "User docker image",
       "description": "Determines languages, libraries and interfaces available",
-      "help": "Leave this blank to use the default",
-      "enumMetadata": {
-        "customInput": {
-          "title": "Use your own docker image",
-          "placeholder": ""
-        },
-        "suggestions": [
-          {
-            "title": "Pangeo Stack Images",
-            "images": [
-              {
-                "title": "Pangeo Notebook",
-                "value": "pangeo/pangeo-notebook",
-                "link": "https://hub.docker.com/r/pangeo/pangeo-notebook",
-                "description": "Geospatial analysis tools"
-              },
-              {
-                "title": "Pangeo ML Notebook",
-                "value": "pangeo/ml-notebook",
-                "link": "https://hub.docker.com/r/pangeo/ml-notebook",
-                "description": "ML analysis tools"
-              }
-            ]
-          },
-          {
-            "title": "Jupyter Stack Images",
-            "images": [
-              {
-                "title": "Jupyter SciPy Notebook",
-                "value": "jupyter/scipy-notebook",
-                "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook",
-                "description": "Popular scientific python packages"
-              },
-              {
-                "title": "Jupyter DataScience Notebook",
-                "value": "jupyter/datascience-notebook",
-                "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook",
-                "description": "Popular scientific packages in Python, R and Julia"
-              },
-              {
-                "title": "Jupyter Spark Notebook (All)",
-                "value": "jupyter/all-spark-notebook",
-                "link": "https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-all-spark-notebook",
-                "description": "Spark in Python"
-              }
-            ]
-          }
-        ]
-      }
+      "help": "Leave this blank to use the default"
     },
     "Spawner.default_url": {
       "type": "string",
