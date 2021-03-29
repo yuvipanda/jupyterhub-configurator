@@ -24,7 +24,7 @@ const customWidgets = {
   TextWidget: TextWidget,
 };
 
-const ConfiguratorForm = ({schema, formData}) => {
+const ConfiguratorForm = ({ schema, formData }) => {
   return (
     <Form
       schema={schema}
@@ -61,7 +61,7 @@ const App = (props) => {
         </div>
       </nav>
       <div className={styles.mainBody + " container"}>
-        {(formData !== null && schema !== null) ? (
+        {formData !== null && schema !== null ? (
           <ConfiguratorForm formData={formData} schema={schema} />
         ) : (
           <p>Loading</p>

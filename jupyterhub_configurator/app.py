@@ -87,12 +87,14 @@ class UIHandler(HubOAuthenticated, web.RequestHandler):
         ui_template = jinja_env.get_template("index.html")
         self.write(ui_template.render(base_url=self.settings["base_url"]))
 
+
 class SchemaHandler(HubOAuthenticated, web.RequestHandler):
     @authenticated
     @admin_only
     def get(self):
         self.set_header("content-type", "application/json; charset=utf-8")
-        self.write(json.dumps(self.settings['configurator'].full_schema))
+        self.write(json.dumps(self.settings["configurator"].full_schema))
+
 
 class Configurator(Application):
     schemas = Dict(
@@ -111,9 +113,8 @@ class Configurator(Application):
         given to the frontend. This allows easy overrides and additions to
         the schema.
         """,
-        config=True
+        config=True,
     )
-
 
     @property
     def full_schema(self):
@@ -127,9 +128,8 @@ class Configurator(Application):
         help="""
         File to read configurator config from
         """,
-        config=True
+        config=True,
     )
-
 
     def start(self):
         self.load_config_file(self.config_file)
@@ -144,7 +144,7 @@ class Configurator(Application):
             "static_path": os.path.join(HERE, "static"),
             "static_url_prefix": mp("static/"),
             "base_url": prefix,
-            "configurator": self
+            "configurator": self,
         }
 
         handlers = [
