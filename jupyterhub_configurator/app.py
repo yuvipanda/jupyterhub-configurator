@@ -85,8 +85,9 @@ class ConfiguratorHandler(HubOAuthenticated, web.RequestHandler):
         storage_backend = self.settings["storage_backend"]
         self.set_header("content-type", "application/json")
         data = storage_backend.read()
-        if not data.get("schema", False):
-            data["schema"] = self.configurator.full_schema
+        # Always return schema & config keys, even if they are empty
+        data['schema'] = data.get('schema', self.configurator.full_schema)
+        data['config'] = data.get('config', {})
         self.write(data)
 
     @authenticated
