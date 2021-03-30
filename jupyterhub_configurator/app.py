@@ -9,6 +9,7 @@ import secrets
 import os
 from urllib.parse import urlparse
 import binascii
+import pluggy
 
 from functools import partial
 from tornado import web
@@ -21,11 +22,12 @@ from jupyterhub.services.auth import HubOAuthenticated
 from jupyterhub.utils import url_path_join, auth_decorator
 
 from traitlets.config import Application
-from traitlets import Dict, Unicode, default, Bytes
+from traitlets import Dict, Unicode, default, Bytes, List
 
 from deepmerge import always_merger
 
 from jinja2 import Environment, FileSystemLoader
+from . import hooks
 
 HERE = os.path.dirname(__file__)
 jinja_env = Environment(loader=FileSystemLoader(os.path.join(HERE, "templates")))
@@ -39,13 +41,17 @@ class StorageBackend:
     def __init__(self):
         self.config_path = os.path.join(os.getcwd(), "configurator_data.json")
 
-    def write(self, config):
+    def write(self, config, schema):
+        data = {"config": config, "schema": schema}
         with open(self.config_path, "w") as f:
-            json.dump(config, f)
+            json.dump(data, f)
 
     # FIXME: Cache this, perhaps based on stat call?
     # Don't want to keep in-memory state, since that forces this class to be a singleton
     def read(self):
+        """
+        Returns a dict with config & schema for that config
+        """
         try:
             with open(self.config_path) as f:
                 return json.load(f)
@@ -68,20 +74,27 @@ def admin_only(self):
 
 
 class ConfiguratorHandler(HubOAuthenticated, web.RequestHandler):
+    @property
+    def configurator(self):
+        return self.settings["configurator"]
+
     # FIXME: PUT THIS BEHIND AUTH AGAIN,
     # BUT ONLY WHEN THE HUB PROCESS CAN TALK TO IT AFTER
     # BEING AUTHENTICATED
     async def get(self):
         storage_backend = self.settings["storage_backend"]
         self.set_header("content-type", "application/json")
-        self.write(storage_backend.read())
+        data = storage_backend.read()
+        if not data.get("schema", False):
+            data["schema"] = self.configurator.full_schema
+        self.write(data)
 
     @authenticated
     @admin_only
     async def post(self):
         storage_backend = self.settings["storage_backend"]
         config = json.loads(self.request.body)
-        storage_backend.write(config)
+        storage_backend.write(config, self.configurator.full_schema)
 
 
 class UIHandler(HubOAuthenticated, web.RequestHandler):
@@ -92,39 +105,42 @@ class UIHandler(HubOAuthenticated, web.RequestHandler):
         self.write(ui_template.render(base_url=self.settings["base_url"]))
 
 
-class SchemaHandler(HubOAuthenticated, web.RequestHandler):
-    @authenticated
-    @admin_only
-    def get(self):
-        self.set_header("content-type", "application/json; charset=utf-8")
-        self.write(json.dumps(self.settings["configurator"].full_schema))
-
-
 class Configurator(Application):
-    schemas = Dict(
+    selected_fields = List(
+        [],
+        help="""
+        List of fields to display to the user.
+
+        Should be keys that map to fields selected in available_fields.
+        """,
+        config=True,
+    )
+
+    available_fields = Dict(
         {},
         help="""
-        Dictionary of dicts of JSON Schema used by the configurator.
+        List of fields available for admins to select for their configurator.
 
         Each value should be a JSON Schema describing an object. Object
         properties should be named with the traitlet key they are going to set -
         for example, `KubeSpawner.image` or `Spawner.default_url`. The value
         specified by the user will be used to set these traitlets *just before
         spawning*. "title", "description" and "default" values of the properties
-        are displayed as you would expect
+        are displayed as you would expect.
 
-        All the dictionary entries will be merged to produce the JSONSchema
-        given to the frontend. This allows easy overrides and additions to
-        the schema.
+        The fields made available here can be shown to users by picking them in
+        'selected_fields'.
         """,
         config=True,
     )
 
     @property
     def full_schema(self):
-        schema = {}
-        for s in self.schemas.values():
-            always_merger.merge(schema, s)
+        schema = {"type": "object", "name": "config", "properties": {}}
+        print(self.available_fields)
+        for field in self.selected_fields:
+            print(field)
+            schema["properties"][field] = self.available_fields[field]
         return schema
 
     config_file = Unicode(
@@ -209,9 +225,20 @@ class Configurator(Application):
         # store the loaded trait value
         self.cookie_secret = secret
 
+    def load_plugins(self):
+        pm = pluggy.PluginManager("jupyterhub_configurator")
+        pm.add_hookspecs(hooks)
+        pm.load_setuptools_entrypoints("jupyterhub_configurator")
+
+        for fields in pm.hook.jupyterhub_configurator_fields():
+            self.available_fields.update(fields)
+
+        return pm
+
     def start(self):
         self.load_config_file(self.config_file)
         self.init_secrets()
+        pm = self.load_plugins()
 
         prefix = os.environ["JUPYTERHUB_SERVICE_PREFIX"]
         mp = partial(url_path_join, prefix)
@@ -223,12 +250,12 @@ class Configurator(Application):
             "static_url_prefix": mp("static/"),
             "base_url": prefix,
             "configurator": self,
+            "plugin_manager": pm,
         }
 
         handlers = [
             (mp("oauth_callback"), HubOAuthCallbackHandler),
             (mp("config"), ConfiguratorHandler),
-            (mp("schema"), SchemaHandler),
             (mp(r"/"), UIHandler),
         ]
         app = web.Application(handlers, debug=True, **tornado_settings)

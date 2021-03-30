@@ -1,11 +1,11 @@
 {
-  "Spawner.default_url": {
-    "ui:widget": "interfacePicker",
+  "z2jh.default_interface": {
+    "ui:widget": "RadioWidget",
     "ui:options": {
       "label": false
     }
   },
-  "KubeSpawner.image": {
+  "z2jh.image": {
     "ui:options": {
       "label": false
     }

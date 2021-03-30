@@ -19,11 +19,11 @@ class ConfiguratorSpawnerMixin(LoggingConfigurable):
         """
         async with aiohttp.ClientSession() as session:
             async with session.get(f"{self.service_url}/config") as response:
-                config = await response.json()
-                return config
+                data = await response.json()
+                return data["config"], data["schema"]
 
     async def start(self, *args, **kwargs):
-        config = await self.fetch_config()
+        config, schema = await self.fetch_config()
         # Traitlets are of the form `ClassName.property_name`.
         # We should pick up properties where ClassName is any
         # class we inherit from. So Spawner.default_url will work
@@ -33,13 +33,15 @@ class ConfiguratorSpawnerMixin(LoggingConfigurable):
         # config itself, since we want admins to be able to change these
         # without having to restart their hub.
         base_classes = [c.__name__ for c in self.__class__.__mro__]
+        properties = schema["properties"]
         for k, v in config.items():
-            cls, prop = k.split(".")
+            traitlet = properties[k]["traitlet"]
+            cls, prop = traitlet.split(".")
             # Only overwrite values if they are truthy.
             # Admins can 'reset to default' by just emptying something
             # out.
             # FIXME: Support explicitly making something unset
             if cls in base_classes and v:
-                self.log.info(f"Setting {k} to {v}")
+                self.log.info(f"Setting {traitlet} to {v}, for config {k}")
                 setattr(self, prop, v)
         return await super().start(*args, **kwargs)

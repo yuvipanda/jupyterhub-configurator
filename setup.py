@@ -7,6 +7,9 @@ setup(
     license="3-BSD",
     author="yuvipanda",
     author_email="yuvipanda@gmail.com",
-    install_requires=["tornado", "aiohttp", "jupyterhub", "deepmerge"],
+    install_requires=["tornado", "aiohttp", "jupyterhub", "deepmerge", "pluggy"],
     include_package_data=True,
+    entry_points={
+        "jupyterhub_configurator": ["z2jh = jupyterhub_configurator.schemas.z2jh"]
+    },
 )

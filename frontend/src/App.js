@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Form from "@rjsf/bootstrap-4";
 import uiSchema from "./uiSchema.json";
-import InterfacePicker from "./InterfacePicker";
+import RadioWidget from "./RadioWidget";
 import ImagePicker from "./ImagePicker";
 import TextWidget from "./TextWidget";
 import styles from "./App.css";
@@ -19,8 +19,7 @@ function updateConfig(formData) {
 }
 
 const customWidgets = {
-  interfacePicker: InterfacePicker,
-  imagePicker: ImagePicker,
+  RadioWidget: RadioWidget,
   TextWidget: TextWidget,
 };
 
@@ -44,10 +43,10 @@ const App = (props) => {
 
   useEffect(() => {
     fetch("/services/configurator/config").then((resp) =>
-      resp.json().then((data) => setFormData(data))
-    );
-    fetch("/services/configurator/schema").then((resp) =>
-      resp.json().then((data) => setSchema(data))
+      resp.json().then((data) => {
+        setSchema(data.schema);
+        setFormData(data.config);
+      })
     );
   }, []);
 
