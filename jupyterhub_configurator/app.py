@@ -8,6 +8,7 @@ import json
 import secrets
 import os
 from urllib.parse import urlparse
+import binascii
 
 from functools import partial
 from tornado import web
@@ -20,7 +21,7 @@ from jupyterhub.services.auth import HubOAuthenticated
 from jupyterhub.utils import url_path_join, auth_decorator
 
 from traitlets.config import Application
-from traitlets import Dict, Unicode, default
+from traitlets import Dict, Unicode, default, Bytes
 
 from deepmerge import always_merger
 
@@ -28,6 +29,10 @@ from jinja2 import Environment, FileSystemLoader
 
 HERE = os.path.dirname(__file__)
 jinja_env = Environment(loader=FileSystemLoader(os.path.join(HERE, "templates")))
+
+COOKIE_SECRET_BYTES = 32
+# JupyterHub does this to try be compatible with Windows if possible
+_mswindows = os.name == "nt"
 
 
 class StorageBackend:
@@ -83,7 +88,6 @@ class UIHandler(HubOAuthenticated, web.RequestHandler):
     @authenticated
     @admin_only
     def get(self):
-        print(self.current_user)
         ui_template = jinja_env.get_template("index.html")
         self.write(ui_template.render(base_url=self.settings["base_url"]))
 
@@ -131,15 +135,89 @@ class Configurator(Application):
         config=True,
     )
 
+    cookie_secret = Bytes(
+        help="""The cookie secret to use to encrypt cookies.
+
+        Loaded from the CONFIGURATOR_COOKIE_SECRET env variable by default.
+
+        Should be exactly 256 bits (32 bytes).
+        """
+    ).tag(config=True, env="CONFIGURATOR_COOKIE_SECRET")
+
+    cookie_secret_file = Unicode(
+        "jupyterhub_configurator_cookie_secret",
+        help="""File in which to store the cookie secret.""",
+        config=True,
+    )
+
+    def init_secrets(self):
+        """
+        Initialize cookie_secret securely
+        """
+        # Adapted from jupyterhub/app.py#init_secrets
+        trait_name = "cookie_secret"
+        trait = self.traits()[trait_name]
+        env_name = trait.metadata.get("env")
+        secret_file = os.path.abspath(os.path.expanduser(self.cookie_secret_file))
+        secret = self.cookie_secret
+        secret_from = "config"
+        # load priority: 1. config, 2. env, 3. file
+        secret_env = os.environ.get(env_name)
+        if not secret and secret_env:
+            secret_from = "env"
+            self.log.info("Loading %s from env[%s]", trait_name, env_name)
+            secret = binascii.a2b_hex(secret_env)
+        if not secret and os.path.exists(secret_file):
+            secret_from = "file"
+            self.log.info("Loading %s from %s", trait_name, secret_file)
+            try:
+                if not _mswindows:  # Windows permissions don't follow POSIX rules
+                    perm = os.stat(secret_file).st_mode
+                    if perm & 0o07:
+                        msg = "cookie_secret_file can be read or written by anybody"
+                        raise ValueError(msg)
+                with open(secret_file) as f:
+                    text_secret = f.read().strip()
+                secret = binascii.a2b_hex(text_secret)
+            except Exception as e:
+                self.log.error(
+                    "Refusing to run Jupyteb configuratorrHu with invalid cookie_secret_file. "
+                    "%s error was: %s",
+                    secret_file,
+                    e,
+                )
+                self.exit(1)
+
+        if not secret:
+            secret_from = "new"
+            self.log.debug("Generating new %s", trait_name)
+            secret = secrets.token_bytes(COOKIE_SECRET_BYTES)
+
+        if secret_file and secret_from == "new":
+            # if we generated a new secret, store it in the secret_file
+            self.log.info("Writing %s to %s", trait_name, secret_file)
+            text_secret = binascii.b2a_hex(secret).decode("ascii")
+            with open(secret_file, "w") as f:
+                f.write(text_secret)
+                f.write("\n")
+            if not _mswindows:  # Windows permissions don't follow POSIX rules
+                try:
+                    os.chmod(secret_file, 0o600)
+                except OSError:
+                    self.log.warning("Failed to set permissions on %s", secret_file)
+                    raise
+        # store the loaded trait value
+        self.cookie_secret = secret
+
     def start(self):
         self.load_config_file(self.config_file)
-        print(self.schemas)
+        self.init_secrets()
 
         prefix = os.environ["JUPYTERHUB_SERVICE_PREFIX"]
         mp = partial(url_path_join, prefix)
 
         tornado_settings = {
-            "cookie_secret": secrets.token_bytes(32),
+            "cookie_secret": self.cookie_secret,
             "storage_backend": StorageBackend(),
             "static_path": os.path.join(HERE, "static"),
             "static_url_prefix": mp("static/"),
