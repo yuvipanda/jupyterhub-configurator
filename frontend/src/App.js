@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Form from "@rjsf/bootstrap-4";
-import uiSchema from "./uiSchema.json";
 import RadioWidget from "./RadioWidget";
-import ImagePicker from "./ImagePicker";
 import TextWidget from "./TextWidget";
 import styles from "./App.css";
 import "./Base.css";
@@ -23,11 +21,40 @@ const customWidgets = {
   TextWidget: TextWidget,
 };
 
+/**
+ * Generate uiSchema programmatically
+ * 
+ * We make opinionated choices about how various JSON fields should
+ * be displayed. This requires setting values in uiSchema. We generate
+ * uiSchema, instead of asking users to make that too.
+ *
+ * @param {JSONSchema} schema 
+ * @returns 
+ */
+
+const uiSchemaForSchema = (schema) => {
+  let uiSchema = {};
+  console.log(schema.properties);
+  for(const propName of Object.keys(schema.properties)) {
+    let options = {
+      'ui:label': false
+    }
+    if (schema.properties[propName].enum !== undefined) {
+      // We want our custom radio button for enums, not default select
+      options['ui:widget'] = 'RadioWidget'
+    }
+    uiSchema[propName] = options;
+  }
+
+  return uiSchema;
+
+}
+
 const ConfiguratorForm = ({ schema, formData }) => {
   return (
     <Form
       schema={schema}
-      uiSchema={uiSchema}
+      uiSchema={uiSchemaForSchema(schema)}
       onChange={console.log}
       onSubmit={updateConfig}
       formData={formData}
