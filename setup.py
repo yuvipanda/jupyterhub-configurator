@@ -10,6 +10,9 @@ setup(
     install_requires=["tornado", "aiohttp", "jupyterhub", "deepmerge", "pluggy"],
     include_package_data=True,
     entry_points={
-        "jupyterhub_configurator": ["z2jh = jupyterhub_configurator.schemas.z2jh"]
+        "jupyterhub_configurator": [
+            "z2jh = jupyterhub_configurator.schemas.z2jh",
+            "tljh = jupyterhub_configurator.schemas.tljh"
+        ]
     },
 )
