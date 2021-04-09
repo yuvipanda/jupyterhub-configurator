@@ -6,14 +6,50 @@ import styles from "./App.css";
 import "./Base.css";
 
 function updateConfig(formData) {
+  // Saving state
+  var submit = document.getElementById("submit");
+  submit.value = "Saving..."
+
   const config = formData.formData;
+  var alert = document.getElementById("alert");
+
   const response = fetch("/services/configurator/config", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(config),
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Form submission failed');
+    }
+    return response.status;
+  })
+  .then(status => {
+    // Submit successful, hide the alert
+    alert.style="opacity:0;transition:all 0.5s linear;"
+    submit.value = "Saved"
+  })
+  .catch(error => {
+    // Error on submit
+    alert.innerText = 'There has been a problem with your form submit operation: \n' + error;
+    alert.className="alert alert-danger"
+    submit.value = "Error"
+    submit.disabled = true
   });
+}
+
+function onChange(formData) {
+  // Show the "needs saving" alert
+  var alert = document.getElementById("alert");
+  alert.style = "opacity:1"
+  alert.innerText = "You have unsaved changes, click submit to save them."
+  alert.className = "alert alert-warning"
+  // Enable the submit button
+  var submit = document.getElementById("submit");
+  submit.disabled = false
+  submit.value = "Submit"
 }
 
 const customWidgets = {
@@ -55,12 +91,14 @@ const ConfiguratorForm = ({ schema, formData }) => {
     <Form
       schema={schema}
       uiSchema={uiSchemaForSchema(schema)}
-      onChange={console.log}
+      onChange={onChange}
       onSubmit={updateConfig}
       formData={formData}
       widgets={customWidgets}
-      onError={console.log}
-    />
+      onError={console.log}>
+      <div className="alert alert-warning collapse" id="alert" role="alert">You have unsaved changes, click submit to save them.</div>
+      <input className="btn btn-primary" type="submit" id="submit" title="Noting to submit" value="Submit" disabled/>
+    </Form>
   );
 };
 
