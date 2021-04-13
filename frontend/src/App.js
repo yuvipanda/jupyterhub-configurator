@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Form from "@rjsf/bootstrap-4";
+import Alert from 'react-bootstrap/Alert'
 import RadioWidget from "./RadioWidget";
 import TextWidget from "./TextWidget";
 import styles from "./App.css";
 import "./Base.css";
 
-function updateConfig(formData) {
+function updateConfig(event, setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility) {
   // Saving state
-  var submit = document.getElementById("submit");
-  submit.value = "Saving..."
-
-  const config = formData.formData;
-  var alert = document.getElementById("alert");
+  setProgress("Saving...")
+  const config = event.formData;
 
   const response = fetch("/services/configurator/config", {
     method: "POST",
@@ -28,28 +26,26 @@ function updateConfig(formData) {
   })
   .then(status => {
     // Submit successful, hide the alert
-    alert.style="opacity:0;transition:all 0.5s linear;"
-    submit.value = "Saved"
+    setAlertVariant("success");
+    setAlertVisibility(true);
+    setAlertText("Changes saved successfully!");
+    setProgress("Saved");
+    setButtonVisibility(false);
   })
   .catch(error => {
     // Error on submit
-    alert.innerText = 'There has been a problem with your form submit operation: \n' + error;
-    alert.className="alert alert-danger"
-    submit.value = "Error"
-    submit.disabled = true
+    setAlertText('There has been a problem with your form submit operation: \n' + error);
+    setAlertVariant('danger');
+    setProgress("Error");
   });
 }
 
-function onChange(formData) {
-  // Show the "needs saving" alert
-  var alert = document.getElementById("alert");
-  alert.style = "opacity:1"
-  alert.innerText = "You have unsaved changes, click submit to save them."
-  alert.className = "alert alert-warning"
-  // Enable the submit button
-  var submit = document.getElementById("submit");
-  submit.disabled = false
-  submit.value = "Submit"
+function onChange(setButtonVisibility, setAlertText, setAlertVariant, setAlertVisibility, setProgress) {
+  setAlertVisibility(true);
+  setButtonVisibility(true);
+  setProgress("Submit");
+  setAlertText("You have unsaved changes, click submit to save them.");
+  setAlertVariant("warning");
 }
 
 const customWidgets = {
@@ -87,17 +83,23 @@ const uiSchemaForSchema = (schema) => {
 }
 
 const ConfiguratorForm = ({ schema, formData }) => {
+  const [progress, setProgress] = useState("Submit");
+  const [buttonShow, setButtonVisibility] = useState(false);
+  const [alertVariant, setAlertVariant] = useState();
+  const [alertText, setAlertText] = useState();
+  const [alertShow, setAlertVisibility] = useState();
+
   return (
     <Form
       schema={schema}
       uiSchema={uiSchemaForSchema(schema)}
-      onChange={onChange}
-      onSubmit={updateConfig}
+      onChange={e => onChange(setButtonVisibility, setAlertText, setAlertVariant, setAlertVisibility, setProgress)}
+      onSubmit={e => updateConfig(e, setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility)}
       formData={formData}
       widgets={customWidgets}
       onError={console.log}>
-      <div className="alert alert-warning collapse" id="alert" role="alert">You have unsaved changes, click submit to save them.</div>
-      <input className="btn btn-primary" type="submit" id="submit" title="Noting to submit" value="Submit" disabled/>
+      <Alert show={alertShow} variant={alertVariant}>{alertText}</Alert>
+      <input className="btn btn-primary" type="submit" value={progress} disabled={!buttonShow}/>
     </Form>
   );
 };
