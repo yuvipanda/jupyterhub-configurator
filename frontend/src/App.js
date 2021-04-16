@@ -26,26 +26,26 @@ function updateConfig(event, setProgress, setAlertVariant, setAlertText, setAler
   })
   .then(status => {
     // Submit successful, hide the alert
-    setAlertVariant("success");
-    setAlertVisibility(true);
-    setAlertText("Changes saved successfully!");
     setProgress("Saved");
+    setAlertVariant("success");
+    setAlertText("Changes saved successfully!");
+    setAlertVisibility(true);
     setButtonVisibility(false);
   })
   .catch(error => {
     // Error on submit
-    setAlertText('There has been a problem with your form submit operation: \n' + error);
-    setAlertVariant('danger');
     setProgress("Error");
+    setAlertVariant('danger');
+    setAlertText('There has been a problem with your form submit operation: \n' + error);
   });
 }
 
-function onChange(setButtonVisibility, setAlertText, setAlertVariant, setAlertVisibility, setProgress) {
+function onChange(setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility) {
+  setProgress("Submit");
+  setAlertVariant("warning");
+  setAlertText("You have unsaved changes, click submit to save them.");
   setAlertVisibility(true);
   setButtonVisibility(true);
-  setProgress("Submit");
-  setAlertText("You have unsaved changes, click submit to save them.");
-  setAlertVariant("warning");
 }
 
 const customWidgets = {
@@ -93,7 +93,7 @@ const ConfiguratorForm = ({ schema, formData }) => {
     <Form
       schema={schema}
       uiSchema={uiSchemaForSchema(schema)}
-      onChange={e => onChange(setButtonVisibility, setAlertText, setAlertVariant, setAlertVisibility, setProgress)}
+      onChange={e => onChange(setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility)}
       onSubmit={e => updateConfig(e, setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility)}
       formData={formData}
       widgets={customWidgets}
