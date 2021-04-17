@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import Form from "@rjsf/bootstrap-4";
 import Alert from 'react-bootstrap/Alert'
+import Toast from 'react-bootstrap/Toast'
+import Button from 'react-bootstrap/Button'
 import RadioWidget from "./RadioWidget";
 import TextWidget from "./TextWidget";
 import styles from "./App.css";
 import "./Base.css";
 
-function updateConfig(event, setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility) {
+function updateConfig(event, setLoading, setAlertVariant, setAlertText, setAlertVisibility) {
   // Saving state
-  setProgress("Saving...")
+  setLoading(true);
   const config = event.formData;
 
   const response = fetch("/services/configurator/config", {
@@ -25,27 +27,19 @@ function updateConfig(event, setProgress, setAlertVariant, setAlertText, setAler
     return response.status;
   })
   .then(status => {
-    // Submit successful, hide the alert
-    setProgress("Saved");
-    setAlertVariant("success");
+    // Submit successful, show a success alert
+    setLoading(false);
+    setAlertVariant("bg-success text-white");
     setAlertText("Changes saved successfully!");
     setAlertVisibility(true);
-    setButtonVisibility(false);
   })
   .catch(error => {
-    // Error on submit
-    setProgress("Error");
-    setAlertVariant('danger');
+    // Error on submit, show an error alert
+    setLoading(false);
+    setAlertVariant('bg-danger text-white');
     setAlertText('There has been a problem with your form submit operation: \n' + error);
+    setAlertVisibility(true);
   });
-}
-
-function onChange(setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility) {
-  setProgress("Submit");
-  setAlertVariant("warning");
-  setAlertText("You have unsaved changes, click submit to save them.");
-  setAlertVisibility(true);
-  setButtonVisibility(true);
 }
 
 const customWidgets = {
@@ -83,23 +77,24 @@ const uiSchemaForSchema = (schema) => {
 }
 
 const ConfiguratorForm = ({ schema, formData }) => {
-  const [progress, setProgress] = useState("Submit");
-  const [buttonShow, setButtonVisibility] = useState(false);
-  const [alertVariant, setAlertVariant] = useState();
-  const [alertText, setAlertText] = useState();
-  const [alertShow, setAlertVisibility] = useState();
+  const [isLoading, setLoading] = useState(false);
+  const [alertVariant, setAlertVariant] = useState("bg-dark text-white");
+  const [alertText, setAlertText] = useState("Click the submit button to save your changes");
+  const [alertShow, setAlertVisibility] = useState(true);
 
   return (
     <Form
       schema={schema}
       uiSchema={uiSchemaForSchema(schema)}
-      onChange={e => onChange(setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility)}
-      onSubmit={e => updateConfig(e, setProgress, setAlertVariant, setAlertText, setAlertVisibility, setButtonVisibility)}
+      onChange={console.log}
+      onSubmit={e => updateConfig(e, setLoading, setAlertVariant, setAlertText, setAlertVisibility)}
       formData={formData}
       widgets={customWidgets}
       onError={console.log}>
-      <Alert show={alertShow} variant={alertVariant}>{alertText}</Alert>
-      <input className="btn btn-primary" type="submit" value={progress} disabled={!buttonShow}/>
+      <Toast onClose={() => setAlertVisibility(false)} show={alertShow} delay={2000} autohide>
+        <Toast.Body className={alertVariant}>{alertText}</Toast.Body>
+      </Toast>
+      <Button type="submit" variant="primary" disabled={isLoading}>{isLoading ? 'Loading…' : 'Submit'}</Button>
     </Form>
   );
 };
