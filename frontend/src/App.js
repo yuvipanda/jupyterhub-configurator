@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "@rjsf/bootstrap-4";
-import Alert from 'react-bootstrap/Alert'
 import Toast from 'react-bootstrap/Toast'
 import Button from 'react-bootstrap/Button'
 import RadioWidget from "./RadioWidget";
@@ -94,7 +93,9 @@ const ConfiguratorForm = ({ schema, formData }) => {
       <Toast onClose={() => setAlertVisibility(false)} show={alertShow} delay={2000} autohide>
         <Toast.Body className={alertVariant}>{alertText}</Toast.Body>
       </Toast>
-      <Button type="submit" variant="primary" disabled={isLoading}>{isLoading ? 'Loading…' : 'Submit'}</Button>
+      <Button type="submit" variant="primary" disabled={isLoading}>
+        {isLoading ? 'Loading…' : 'Submit'}
+      </Button>
     </Form>
   );
 };
