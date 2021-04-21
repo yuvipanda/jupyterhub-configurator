@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Form from "@rjsf/bootstrap-4";
-import Toast from 'react-bootstrap/Toast'
-import Button from 'react-bootstrap/Button'
+import Toast from 'react-bootstrap/Toast';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import RadioWidget from "./RadioWidget";
 import TextWidget from "./TextWidget";
 import styles from "./App.css";
@@ -28,15 +30,15 @@ function updateConfig(event, setLoading, setAlertVariant, setAlertText, setAlert
   .then(status => {
     // Submit successful, show a success alert
     setLoading(false);
-    setAlertVariant("bg-success text-white");
+    setAlertVariant("bg-success text-white rounded");
     setAlertText("Changes saved successfully!");
     setAlertVisibility(true);
   })
   .catch(error => {
     // Error on submit, show an error alert
     setLoading(false);
-    setAlertVariant('bg-danger text-white');
-    setAlertText('There has been a problem with your form submit operation: \n' + error);
+    setAlertVariant("bg-danger text-white rounded");
+    setAlertText("There has been a problem with your form submit operation: \n" + error);
     setAlertVisibility(true);
   });
 }
@@ -77,7 +79,7 @@ const uiSchemaForSchema = (schema) => {
 
 const ConfiguratorForm = ({ schema, formData }) => {
   const [isLoading, setLoading] = useState(false);
-  const [alertVariant, setAlertVariant] = useState("bg-dark text-white");
+  const [alertVariant, setAlertVariant] = useState("bg-dark text-white rounded");
   const [alertText, setAlertText] = useState("Click the submit button to save your changes");
   const [alertShow, setAlertVisibility] = useState(true);
 
@@ -90,12 +92,18 @@ const ConfiguratorForm = ({ schema, formData }) => {
       formData={formData}
       widgets={customWidgets}
       onError={console.log}>
-      <Toast onClose={() => setAlertVisibility(false)} show={alertShow} delay={2000} autohide>
-        <Toast.Body className={alertVariant}>{alertText}</Toast.Body>
-      </Toast>
-      <Button type="submit" variant="primary" disabled={isLoading}>
-        {isLoading ? 'Loading…' : 'Submit'}
-      </Button>
+      <Row>
+        <Col md="auto">
+          <Button type="submit" variant="primary" disabled={isLoading}>
+            {isLoading ? "Loading…" : "Submit"}
+          </Button>
+        </Col>
+        <Col md="auto">
+          <Toast onClose={() => setAlertVisibility(false)} show={alertShow} delay={2000} autohide>
+           <Toast.Header className={alertVariant}>{alertText}</Toast.Header>
+          </Toast>
+        </Col>
+      </Row>
     </Form>
   );
 };
