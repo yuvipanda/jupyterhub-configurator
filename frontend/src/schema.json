@@ -6,7 +6,7 @@
       "type": "string",
       "title": "User docker image",
       "description": "Determines languages, libraries and interfaces available",
-      "help": "Leave this blank to use the default"
+      "help": "Should be of the form <docker registry>/<org>/<name>:<tag>. E.g., quay.io/2i2c/myimagename:cb5757e7c9f8. Leave this blank to use the default."
     },
     "Spawner.default_url": {
       "type": "string",
@@ -18,17 +18,17 @@
           {
             "value": "/tree",
             "title": "Classic Notebook",
-            "description": "What most people think of as Jupyter"
+            "description": "The original web application for creating and sharing computational documents"
           },
           {
             "value": "/lab",
             "title": "JupyterLab",
-            "description": "Powerful next generation notebook interface"
+            "description": "The latest web-based interactive development environment"
           },
           {
             "value": "/rstudio",
             "title": "RStudio",
-            "description": "Very popular R IDE"
+            "description": "A very popular R IDE from the company RStudio"
           }
         ]
       }
