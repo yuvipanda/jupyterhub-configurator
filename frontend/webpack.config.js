@@ -41,7 +41,7 @@ module.exports = {
     path: path.resolve(__dirname, "../jupyterhub_configurator/static"),
   },
   mode: "development",
-  watch: true,
+  watch: false,
   devServer: {
     hot: true,
   },

@@ -1,4 +1,23 @@
+from jupyter_packaging import wrap_installers, npm_builder
+import os.path
 from setuptools import setup, find_packages
+
+HERE = os.path.abspath(os.path.dirname(__file__))
+
+# Representative files that should exist after a successful build
+jstargets = [
+    os.path.join(HERE, "jupyterhub_configurator", "static", "index.js")
+]
+
+jsdeps = npm_builder(
+    path="frontend",
+    build_cmd="dev",
+    build_dir=os.path.join("jupyterhub_configurator", "static"),
+    source_dir="frontend"
+)
+cmdclass = wrap_installers(
+    pre_develop=jsdeps, pre_dist=jsdeps,
+    ensured_targets=jstargets)
 
 setup(
     name="jupyterhub-configurator",
@@ -7,6 +26,7 @@ setup(
     license="3-BSD",
     author="yuvipanda",
     author_email="yuvipanda@gmail.com",
+    cmdclass=cmdclass,
     install_requires=["tornado", "aiohttp", "jupyterhub", "deepmerge", "pluggy"],
     include_package_data=True,
     entry_points={
