@@ -8,7 +8,7 @@
 2. A set of mixins to be used with your JupyterHub spawner for dynamic configuration
 3. A [react](https://reactjs.org/) based frontend
 
-
+(contributing:backend)=
 ## Backend & JupyterHub
 
 Since `jupyterhub-configurator` is run as a JupyterHub service, it is best developed
@@ -39,22 +39,46 @@ the backend.
 
 ## Frontend
 
-You need [npm](https://www.npmjs.com/) to work on the frontend, which is contained inside
-the `frontend/` directory.
+This section describes how to set up the right environment and make contributions to the front-end.
 
-1. Get inside the `frontend/` directory and install required dependencies
-   
-   ```bash
-   cd frontend
-   npm i
+### Location of files
+
+The configuration and files for the frontend are contained in the `frontend/` folder.
+Most of the files in this folder are configuration for webpack and npm, to control the dependencies and steps needed to build the JavaScript.
+
+The `src/` folder contains the files that define the look and feel of the configurator.
+These are mostly arranged into **components** with JavaScript and CSS defined for each section of the configurator page.
+
+The `src/schema.json` file defines the text and structure of the configurator. If you want to edit a description, title, or prompt, this is the place to do it.
+
+### Make a change to the frontend
+
+To make a change to the frontend, take these steps:
+
+1. Install `npm`. We use NPM to build the JavaScript for serving the UI. [Here are download instructions for `npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/).
+2. Switch into the `frontent/` directory:
+
+   ```console
+   $ cd frontend
    ```
 
-2. We use [webpack](https://webpack.js.org/) to build our dependencies, and it can
-   automatically rebuild whenever you make a change.
+3. Install required dependencies with `npm`.
    
    ```bash
-   npm run dev
+   npm install --no-package-lock
    ```
 
-3. Your configurator page should now be running your latest local build of JS.
-   You have to refresh the page to pick up any changes.
+   This will install all of the necessary `npm` packages to build the configurator.
+   Note that the `--no-package-lock` flag will prevent `npm` from over-writing the `package-lock.json` file.
+   If you **want** to do this, simply run `npm install` without that flag.
+
+4. Build the dependencies. We use [webpack](https://webpack.js.org/) to build our dependencies. Run it with this command
+   
+   ```console
+   $ npm run dev
+   ```
+
+   This will build the dependencies and watch the relevant files for any changes, re-building as necessary.
+
+5. Your configurator page should now be running your latest local build of JS.
+   You can preview the results by running the configurator with your JupyterHub (see [](contributing:backend) for more information). You'll need to **refresh the page** to see any changes.
