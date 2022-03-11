@@ -1,3 +1,4 @@
 graft frontend
+prune frontend/node_modules
 graft jupyterhub_configurator/static
 graft jupyterhub_configurator/templates
