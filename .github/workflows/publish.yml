@@ -17,16 +17,18 @@ jobs:
         with:
           node-version: "16"
 
-      - name: install build package
+      - name: install build requirements
         run: |
           pip install --upgrade pip
-          pip install build
+          pip install -r dev-requirements.txt
           pip freeze
 
       - name: build release
         run: |
-          # Defaults to building sdist, and wheel from sdist
-          python -m build .
+          # pep517 setuptools doesn't support editable installs
+          # https://github.com/pypa/setuptools/issues/2816
+          # so instead of pyproject.yml and `python -m build .` use setup.py:
+          python setup.py sdist bdist_wheel
           ls -l dist
 
       # - name: publish to pypi
