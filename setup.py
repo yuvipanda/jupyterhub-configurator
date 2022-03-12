@@ -13,7 +13,10 @@ jsdeps = npm_builder(
     path="frontend",
     build_cmd="dev",
     build_dir=os.path.join("jupyterhub_configurator", "static"),
-    source_dir="frontend"
+    source_dir="frontend",
+    # TODO: jupyter-packaging should autodetect whether to build/rebuild
+    # but at present it's not working in the GitHub workflow 😢
+    force=not all(os.path.exists(f) for f in jstargets),
 )
 cmdclass = wrap_installers(
     pre_develop=jsdeps, pre_dist=jsdeps,
