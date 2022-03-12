@@ -11,7 +11,7 @@ jstargets = [
 
 jsdeps = npm_builder(
     path="frontend",
-    build_cmd="dev",
+    build_cmd="build",
     build_dir=os.path.join("jupyterhub_configurator", "static"),
     source_dir="frontend",
     # TODO: jupyter-packaging should autodetect whether to build/rebuild

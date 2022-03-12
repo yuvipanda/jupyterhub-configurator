@@ -41,8 +41,6 @@ module.exports = {
     path: path.resolve(__dirname, "../jupyterhub_configurator/static"),
     hashFunction: "xxhash64"
   },
-  mode: "development",
-  watch: false,
   devServer: {
     hot: true,
   },
