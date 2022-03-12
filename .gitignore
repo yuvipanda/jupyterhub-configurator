@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 node_modules/
-jupyterhub_configurator/static/index.js
+jupyterhub_configurator/static/
