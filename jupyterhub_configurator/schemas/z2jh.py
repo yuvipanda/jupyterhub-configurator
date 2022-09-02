@@ -8,7 +8,7 @@ def jupyterhub_configurator_fields():
             "type": "string",
             "title": "User docker image",
             "description": "Determines languages, libraries and interfaces available",
-            "help": "Leave this blank to use the default",
+            "help": "Eg. \"quay.io/org/user-image:c4e586ff9240\". Leave this blank to use the default.",
             "traitlet": "KubeSpawner.image",
         },
         "z2jh.default_interface": {
