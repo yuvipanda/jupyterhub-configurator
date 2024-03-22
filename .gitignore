@@ -1,3 +1,10 @@
+# manually added
+jupyterhub_cookie_secret
+jupyterhub.sqlite
+jupyterhub-proxy.pid
+jupyterhub_configurator_cookie_secret
+configurator_data.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
