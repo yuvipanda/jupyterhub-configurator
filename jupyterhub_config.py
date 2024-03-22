@@ -5,6 +5,7 @@ from jupyterhub.spawner import SimpleLocalProcessSpawner
 from jupyterhub_configurator.mixins import ConfiguratorSpawnerMixin
 
 c.JupyterHub.authenticator_class = "dummy"
+c.JupyterHub.default_url = "/hub/home"
 
 c.Authenticator.admin_users = ["admin"]
 
