@@ -89,7 +89,11 @@ class UIHandler(HubOAuthenticated, web.RequestHandler):
     @admin_only
     def get(self):
         ui_template = jinja_env.get_template("index.html")
-        self.write(ui_template.render(base_url=self.settings["base_url"]))
+        template_ns = {
+            "base_url": self.settings["base_url"],
+            "xsrf_token": self.xsrf_token.decode("ascii"),
+        }
+        self.write(ui_template.render(template_ns))
 
 
 class SchemaHandler(HubOAuthenticated, web.RequestHandler):

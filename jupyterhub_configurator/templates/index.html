@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>JupyterHub Configurator</title>
-<script defer src="{{ base_url }}/static/index.js"></script></head>
+    <script type="text/javascript">
+        window.jhdata = {
+            base_url: "{{ base_url }}",
+            xsrf_token: "{{ xsrf_token }}"
+        }
+    </script>
+    <script defer src="{{ base_url }}static/index.js"></script></head>
 <body>
-
     <div id="root">
     </div>
 </body>

@@ -7,15 +7,29 @@ import TextWidget from "./TextWidget";
 import styles from "./App.css";
 import "./Base.css";
 
-function updateConfig(formData) {
-  const config = formData.formData;
-  const response = fetch("/services/configurator/config", {
-    method: "POST",
+const jhdata = window.jhdata || {};
+const base_url = jhdata.base_url || "/";
+const xsrf_token = jhdata.xsrf_token;
+
+function configuratorFetch(endpoint, method, data) {
+  let api_url = new URL(`${base_url}` + endpoint, location.origin);
+  if (xsrf_token) {
+    api_url.searchParams.set("_xsrf", xsrf_token);
+  }
+  return fetch(api_url, {
+    method: method,
+    json: true,
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/jupyterhub-pagination+json",
     },
-    body: JSON.stringify(config),
+    body: data ? JSON.stringify(data) : null,
   });
+};
+
+function updateConfig(formData) {
+  const config = formData.formData;
+  const response = configuratorFetch("config", "POST", JSON.stringify(config))
 }
 
 const customWidgets = {
@@ -43,10 +57,10 @@ const App = (props) => {
   const [schema, setSchema] = useState(null);
 
   useEffect(() => {
-    fetch("/services/configurator/config").then((resp) =>
+    configuratorFetch("config").then((resp) =>
       resp.json().then((data) => setFormData(data))
     );
-    fetch("/services/configurator/schema").then((resp) =>
+    configuratorFetch("schema").then((resp) =>
       resp.json().then((data) => setSchema(data))
     );
   }, []);
