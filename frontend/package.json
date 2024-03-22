@@ -4,7 +4,8 @@
   "description": "Self-service configuration for JupyterHub",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development"
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production --no-watch"
   },
   "repository": {
     "type": "git",
