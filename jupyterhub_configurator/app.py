@@ -7,7 +7,6 @@ showing the user their own info.
 import json
 import secrets
 import os
-from urllib.parse import urlparse
 import binascii
 import pluggy
 

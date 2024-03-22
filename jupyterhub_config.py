@@ -1,6 +1,4 @@
 import sys
-import json
-import aiohttp
 from jupyterhub.spawner import SimpleLocalProcessSpawner
 from jupyterhub_configurator.mixins import ConfiguratorSpawnerMixin
 
