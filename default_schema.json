@@ -1,0 +1,41 @@
+{
+    "type": "object",
+    "name": "config",
+    "properties": {
+      "KubeSpawner.image": {
+        "type": "string",
+        "title": "User docker image",
+        "description": "Determines languages, libraries and interfaces available",
+        "help": "Leave this blank to use the default"
+      },
+      "Spawner.default_url": {
+        "type": "string",
+        "title": "Default User Interface",
+        "enum": [
+          "/tree",
+          "/lab",
+          "/rstudio"
+        ],
+        "default": "/tree",
+        "enumMetadata": {
+          "interfaces": [
+            {
+              "value": "/tree",
+              "title": "Classic Notebook",
+              "description": "The original single-document interface for creating Jupyter Notebooks."
+            },
+            {
+              "value": "/lab",
+              "title": "JupyterLab",
+              "description": "A Powerful next generation notebook interface"
+            },
+            {
+              "value": "/rstudio",
+              "title": "RStudio",
+              "description": "An IDE For R, created by the RStudio company"
+            }
+          ]
+        }
+      }
+    }
+  }
