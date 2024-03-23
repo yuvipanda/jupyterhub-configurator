@@ -9,19 +9,34 @@ import TextWidget from "./TextWidget";
 import styles from "./App.css";
 import "./Base.css";
 
+const jhdata = window.jhdata || {};
+const base_url = jhdata.base_url || "/";
+const xsrf_token = jhdata.xsrf_token;
+
+function configuratorFetch(endpoint, method, data) {
+  let api_url = new URL(`${base_url}` + endpoint, location.origin);
+  if (xsrf_token) {
+    api_url.searchParams.set("_xsrf", xsrf_token);
+  }
+  return fetch(api_url, {
+    method: method,
+    json: true,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/jupyterhub-pagination+json",
+    },
+    body: data ? JSON.stringify(data) : null,
+  });
+};
+
+
 function updateConfig(event, setLoading, setAlertVariant, setAlertText, setAlertVisibility) {
   // Saving state
   setLoading(true);
   const config = event.formData;
 
-  const response = fetch("/services/configurator/config", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(config),
-  })
-  .then(response => {
+  const response = configuratorFetch("config", "POST", JSON.stringify(config))
+    .then(response => {
     if (!response.ok) {
       throw new Error('Form submission failed');
     }
@@ -61,7 +76,6 @@ const customWidgets = {
 
 const uiSchemaForSchema = (schema) => {
   let uiSchema = {};
-  console.log(schema.properties);
   for(const propName of Object.keys(schema.properties)) {
     let options = {
       'ui:label': false
@@ -113,7 +127,7 @@ const App = (props) => {
   const [schema, setSchema] = useState(null);
 
   useEffect(() => {
-    fetch("/services/configurator/config").then((resp) =>
+    configuratorFetch("config").then((resp) =>
       resp.json().then((data) => {
         setSchema(data.schema);
         setFormData(data.config);

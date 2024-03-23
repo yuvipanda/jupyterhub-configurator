@@ -7,7 +7,6 @@ showing the user their own info.
 import json
 import secrets
 import os
-from urllib.parse import urlparse
 import binascii
 import pluggy
 
@@ -103,7 +102,11 @@ class UIHandler(HubOAuthenticated, web.RequestHandler):
     @admin_only
     def get(self):
         ui_template = jinja_env.get_template("index.html")
-        self.write(ui_template.render(base_url=self.settings["base_url"]))
+        template_ns = {
+            "base_url": self.settings["base_url"],
+            "xsrf_token": self.xsrf_token.decode("ascii"),
+        }
+        self.write(ui_template.render(template_ns))
 
 
 class Configurator(Application):
@@ -138,9 +141,7 @@ class Configurator(Application):
     @property
     def full_schema(self):
         schema = {"type": "object", "name": "config", "properties": {}}
-        print(self.available_fields)
         for field in self.selected_fields:
-            print(field)
             schema["properties"][field] = self.available_fields[field]
         return schema
 
